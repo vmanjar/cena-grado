@@ -1,29 +1,124 @@
-import { Utensils } from 'lucide-react'
+import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { menuCourses } from './data/menuData';
+import WelcomeStep from './components/WelcomeStep';
+import CourseStep from './components/CourseStep';
+import ReviewStep from './components/ReviewStep';
+import SuccessStep from './components/SuccessStep';
 
-function App() {
+export default function App() {
+  // steps: 'welcome' | 'course' | 'review' | 'success'
+  const [step, setStep] = useState('welcome');
+  const [courseIndex, setCourseIndex] = useState(0);
+  const [guestName, setGuestName] = useState('');
+  const [selections, setSelections] = useState({});
+  const [notasAlergias, setNotasAlergias] = useState('');
+  const [submittedPayload, setSubmittedPayload] = useState(null);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleStart = (name) => {
+    setGuestName(name);
+    setCourseIndex(0);
+    setStep('course');
+    scrollToTop();
+  };
+
+  const advanceFromCourse = (courseId, courseData) => {
+    setSelections((prev) => ({
+      ...prev,
+      [courseId]: courseData
+    }));
+
+    if (courseIndex < menuCourses.length - 1) {
+      setCourseIndex((prev) => prev + 1);
+    } else {
+      setStep('review');
+    }
+    scrollToTop();
+  };
+
+  const handleBackFromCourse = () => {
+    if (courseIndex > 0) {
+      setCourseIndex((prev) => prev - 1);
+    } else {
+      setStep('welcome');
+    }
+    scrollToTop();
+  };
+
+  const handleBackFromReview = () => {
+    setCourseIndex(menuCourses.length - 1);
+    setStep('course');
+    scrollToTop();
+  };
+
+  const handleSuccess = (payload, notes) => {
+    setSubmittedPayload(payload);
+    setNotasAlergias(notes);
+    setStep('success');
+    scrollToTop();
+  };
+
+  const currentCourse = menuCourses[courseIndex];
+  const currentStep =
+    step === 'course' && currentCourse ? currentCourse.id : step;
+
+  const isDarkSurface = step === 'welcome' || step === 'success';
+
   return (
-    <main className="min-h-screen max-w-md mx-auto px-5 py-8 flex flex-col justify-between">
-      <header className="flex items-center gap-3">
-        <Utensils className="w-6 h-6 text-[#1C1917]" strokeWidth={1.75} />
-        <span className="text-xs uppercase tracking-widest opacity-70">
-          Verificación de Sistema
-        </span>
-      </header>
+    <div
+      className={`min-h-screen bg-[#FAF8F5] text-stone-900 transition-colors duration-300 ${
+        isDarkSurface ? '!bg-[#1c2821]' : '!bg-[#b7dfd2]'
+      }`}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        {step === 'welcome' && (
+          <WelcomeStep
+            key={currentStep}
+            stepKey={currentStep}
+            initialName={guestName}
+            onStart={handleStart}
+          />
+        )}
 
-      <section className="my-auto text-center space-y-4">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-[#1C1917]/15">
-          <Utensils className="w-6 h-6 text-[#1C1917]" strokeWidth={1.5} />
-        </div>
-        <h1 className="text-2xl font-serif font-medium tracking-tight">
-          Cena de Grado — Prueba de Entorno
-        </h1>
-      </section>
+        {step === 'course' && currentCourse && (
+          <CourseStep
+            key={currentStep}
+            stepKey={currentStep}
+            course={currentCourse}
+            courseIndex={courseIndex}
+            totalCourses={menuCourses.length}
+            savedSelection={selections[currentCourse.id]}
+            onSaveAndContinue={advanceFromCourse}
+            onSkipCourse={advanceFromCourse}
+            onBack={handleBackFromCourse}
+          />
+        )}
 
-      <footer className="text-center text-xs opacity-60">
-        Tailwind CSS v4 · Lucide React · GitHub Pages Ready
-      </footer>
-    </main>
-  )
+        {step === 'review' && (
+          <ReviewStep
+            key={currentStep}
+            stepKey={currentStep}
+            guestName={guestName}
+            selections={selections}
+            initialNotes={notasAlergias}
+            onBack={handleBackFromReview}
+            onSuccess={handleSuccess}
+          />
+        )}
+
+        {step === 'success' && (
+          <SuccessStep
+            key={currentStep}
+            stepKey={currentStep}
+            guestName={guestName}
+            submittedPayload={submittedPayload}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
-
-export default App
