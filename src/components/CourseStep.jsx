@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SIDE_OPTIONS, DONENESS_OPTIONS } from '../data/menuData';
 import chevronLeft from '../assets/figma/chevron-left.svg';
@@ -57,6 +57,12 @@ export default function CourseStep({
   const [selectedDoneness, setSelectedDoneness] = useState(
     savedSelection && !savedSelection.skipped ? savedSelection.doneness || '' : ''
   );
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [course.id]);
 
   const activeItem =
     course.items.find((item) => item.id === selectedItemId) || null;

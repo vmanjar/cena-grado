@@ -16,7 +16,12 @@ export default function App() {
   const [submittedPayload, setSubmittedPayload] = useState(null);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   };
 
   const handleStart = (name) => {
@@ -74,7 +79,11 @@ export default function App() {
         isDarkSurface ? '!bg-[#1c2821]' : '!bg-[#b7dfd2]'
       }`}
     >
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence
+        mode="wait"
+        initial={false}
+        onExitComplete={scrollToTop}
+      >
         {step === 'welcome' && (
           <WelcomeStep
             key={currentStep}
