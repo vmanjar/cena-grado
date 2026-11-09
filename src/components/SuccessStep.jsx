@@ -142,6 +142,23 @@ export default function SuccessStep({
               </div>
             </motion.div>
           )}
+
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col gap-[6px] font-sans text-[15px] text-[#f7fbf9] transform-gpu will-change-transform"
+          >
+            <div>
+              <a
+                href="https://maps.app.goo.gl/izrSqWvpCRJTkFRN8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-[#b7dfd2] transition-colors"
+              >
+                Cl. 41 #22-32, Bogotá
+              </a>
+            </div>
+            <p className="m-0 text-[#b7dfd2]">12 nov, 7 PM</p>
+          </motion.div>
         </div>
       </motion.div>
     </motion.div>
