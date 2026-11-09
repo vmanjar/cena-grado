@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import vmanjarLogo from '../assets/figma/vmanjar-logo.svg';
 
 const pageTransitionVariants = {
@@ -43,6 +43,7 @@ export default function WelcomeStep({
 }) {
   const [name, setName] = useState(initialName);
   const [error, setError] = useState(false);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -121,7 +122,27 @@ export default function WelcomeStep({
                 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] text-[#b7dfd2] w-full m-0"
                 data-node-id="892:34"
               >
-                me gradúo.
+                me{' '}
+                <span
+                  onClick={() => setShowEasterEgg((prev) => !prev)}
+                  className="relative inline-block cursor-pointer select-none"
+                >
+                  gradúo
+                  <AnimatePresence>
+                    {showEasterEgg && (
+                      <motion.span
+                        initial={{ opacity: 0, y: 8, scale: 0.85 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.85 }}
+                        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute -top-5 left-[85%] text-[#f13315] text-[28px] font-serif whitespace-nowrap leading-none pointer-events-none select-none"
+                      >
+                        por fin
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </span>
+                .
               </p>
             </motion.div>
 
