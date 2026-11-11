@@ -39,7 +39,8 @@ const itemVariants = {
 export default function WelcomeStep({
   stepKey = 'welcome',
   initialName = '',
-  onStart
+  onStart,
+  onOpenComanda
 }) {
   const [name, setName] = useState(initialName);
   const [error, setError] = useState(false);
@@ -163,7 +164,7 @@ export default function WelcomeStep({
         {/* Section Invitación e Interacción */}
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-[96px] items-start justify-center pb-[108px] pt-[54px] w-full"
+          className="flex flex-col gap-[96px] items-start justify-center pb-[64px] pt-[54px] w-full"
           data-node-id="892:38"
           data-name="section-invi"
         >
@@ -245,6 +246,22 @@ export default function WelcomeStep({
             </motion.div>
           </div>
         </form>
+
+        {/* Enlace sutil de pie de página hacia la comanda */}
+        {onOpenComanda && (
+          <motion.footer
+            variants={itemVariants}
+            className="pb-8 pt-2 flex justify-center w-full transform-gpu will-change-transform"
+          >
+            <button
+              type="button"
+              onClick={onOpenComanda}
+              className="font-sans text-[11px] uppercase tracking-[0.16em] text-[#5aa78f]/50 hover:text-[#b7dfd2] transition-colors cursor-pointer"
+            >
+              Ver comanda de invitados
+            </button>
+          </motion.footer>
+        )}
       </motion.div>
     </motion.div>
   );
